@@ -1,0 +1,62 @@
+[
+    {
+        "relation":
+        [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target":
+        {
+            "namespace": "android_app",
+            "package_name": "com.bok.cordova",
+            "sha256_cert_fingerprints":
+            [
+                "0B:4D:36:2C:F8:03:15:CF:2A:39:7E:DA:A4:EB:33:DF:35:09:27:4A:3D:B2:18:B9:E4:F0:2E:88:99:5A:35:89"
+            ]
+        }
+    },
+    {
+        "relation":
+        [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target":
+        {
+            "namespace": "android_app",
+            "package_name": "com.bok.cordova",
+            "sha256_cert_fingerprints":
+            [
+                "67:A6:F7:B0:24:A6:BA:8F:02:90:73:9B:51:97:9C:74:BA:65:A4:AE:B7:3C:74:C7:4C:72:C1:A9:65:29:F9:08"
+            ]
+        }
+    },
+    {
+        "relation":
+        [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target":
+        {
+            "namespace": "android_app",
+            "package_name": "bok.mitake.com.bokmbank.dev",
+            "sha256_cert_fingerprints":
+            [
+                "0B:4D:36:2C:F8:03:15:CF:2A:39:7E:DA:A4:EB:33:DF:35:09:27:4A:3D:B2:18:B9:E4:F0:2E:88:99:5A:35:89"
+            ]
+        }
+    },
+    {
+        "relation":
+        [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target":
+        {
+            "namespace": "android_app",
+            "package_name": "bok.mitake.com.bokmbank.dev",
+            "sha256_cert_fingerprints":
+            [
+                "67:A6:F7:B0:24:A6:BA:8F:02:90:73:9B:51:97:9C:74:BA:65:A4:AE:B7:3C:74:C7:4C:72:C1:A9:65:29:F9:08"
+            ]
+        }
+    }
+]
