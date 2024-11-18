@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open App or Redirect</title>
+</head>
+<body>
+  <a href="#" onclick="openAppOrRedirect()">Open App</a>
+
+  <script>
+    function openAppOrRedirect() {
+      // 設定應用的 URL Scheme
+      var appScheme = "https://cobeco.github.io";
+      // 設定應用的 Google Play 商店連結
+      var playStoreLink = "https://play.google.com/store/apps/details?id=com.bok.cordova";
+
+      // 設定計時器，用來判斷是否安裝了應用
+      var isAppOpened = false;
+      setTimeout(function() {
+        if (!isAppOpened) {
+          // 若應用未開啟，則導航至 Google Play 商店
+          window.location.href = playStoreLink;
+        }
+      }, 1500); // 延遲 1.5 秒進行判斷
+
+      // 嘗試開啟應用
+      var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = appScheme;
+      document.body.appendChild(iframe);
+
+      // 在 1 秒內檢測到 iframe 成功載入即視為應用已開啟
+      setTimeout(function() {
+        isAppOpened = true;
+        document.body.removeChild(iframe);
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
