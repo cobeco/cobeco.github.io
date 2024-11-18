@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Scheme Demo</title>
+</head>
+<body>
+    <!-- 基本按鈕範例 -->
+    <button id="openLineBtn">開啟 Line</button>
+
+    <!-- 進階用法：多個按鈕範例 -->
+    <div class="app-buttons">
+        <!-- Line -->
+        <a href="javascript:void(0)" 
+           onclick="new URLSchemeHandler({
+               scheme: 'line://',
+               packageName: 'jp.naver.line.android'
+           }).openApp()">
+            開啟 Line
+        </a>
+
+        <!-- Facebook -->
+        <a href="javascript:void(0)" 
+           onclick="new URLSchemeHandler({
+               scheme: 'fb://',
+               packageName: 'com.facebook.katana'
+           }).openApp()">
+            開啟 Facebook
+        </a>
+
+        <!-- Instagram -->
+        <a href="javascript:void(0)" 
+           onclick="new URLSchemeHandler({
+               scheme: 'instagram://',
+               packageName: 'com.instagram.android'
+           }).openApp()">
+            開啟 Instagram
+        </a>
+    </div>
+
+    <script src="urlSchemeHandler.js"></script>
+</body>
+</html>
