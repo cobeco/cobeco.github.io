@@ -48,8 +48,8 @@ class URLSchemeHandler {
 
 // 使用範例
 const openLine = new URLSchemeHandler({
-    scheme: 'line://',
-    packageName: 'jp.naver.line.android',
+    scheme: 'https://cobeco.github.io',
+    packageName: 'com.bok.cordova',
     timeout: 500
 });
 
