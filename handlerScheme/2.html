@@ -10,23 +10,27 @@
 
   <script>
     function openAppOrRedirect() {
-  var appScheme = "myapp://page"; // 應用的 URL Scheme
-  var playStoreLink = "https://play.google.com/store/apps/details?id=com.example.app"; // Google Play 連結
+      // 設定應用的 URL Scheme
+      var appScheme = "https://cobeco.github.io";
+      // 設定應用的 Google Play 商店連結
+      var playStoreLink = "https://play.google.com/store/apps/details?id=com.bok.cordova";
 
-  var isAppOpened = false;
-  setTimeout(function() {
-    if (!isAppOpened) {
-      window.location.href = playStoreLink; // 如果未安裝應用，導航至 Google Play
+      // 設定計時器，用來判斷是否安裝了應用
+      var isAppOpened = false;
+      setTimeout(function() {
+        if (!isAppOpened) {
+          // 若應用未開啟，則導航至 Google Play 商店
+          window.location.href = playStoreLink;
+        }
+      }, 1500); // 延遲 1.5 秒進行判斷
+
+      // 嘗試直接導航至應用的 URL Scheme
+      window.location.href = appScheme;
+
+      setTimeout(function() {
+        isAppOpened = true;
+      }, 1000);
     }
-  }, 1500);
-
-  // 嘗試直接導航至應用的 URL Scheme
-  window.location.href = appScheme;
-
-  setTimeout(function() {
-    isAppOpened = true;
-  }, 1000);
-}
   </script>
 </body>
 </html>
