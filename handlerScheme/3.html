@@ -26,13 +26,10 @@
         }
       }, 1500);
 
-      const iframe = document.createElement("iframe");
-      iframe.style.display = "none";
-      iframe.src = appScheme;
-      document.body.appendChild(iframe);
+      window.location.href = appScheme;
+      
       setTimeout(function() {
         isAppOpened = true;
-        document.body.removeChild(iframe);
       }, 1000);
     }
   </script>
