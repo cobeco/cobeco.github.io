@@ -8,11 +8,11 @@
     const url = window.location.href;
     const params = new URLSearchParams(url.search);
     const isi = params.get('isi');
-    const ibi = params.get('ibi');
+    const apn = params.get('apn');
 
     const bokUrl = "https://www.bok.com.tw";
-    const appStoreLink = isi ? ("https%3A%2F%2Fapps.apple.com%2Fapp%2Fid"+isi) : bokUrl ;
-    const playStoreLink = ibi ? ("https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3D"+ibi) : bokUrl;
+    const appStoreLink = isi ? ("https://apps.apple.com/app/id"+isi) : bokUrl ;
+    const playStoreLink = apn ? ("https://play.google.com/store/apps/details?id="+apn) : bokUrl;
 
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     const isAndroid = /Android/i.test(navigator.userAgent);
