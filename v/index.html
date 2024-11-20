@@ -5,15 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title></title>
   <script>
+    const url = window.location.href;
+    const params = new URLSearchParams(url.search);
+    const isi = params.get('isi');
+    const ibi = params.get('ibi');
+
+    const bokUrl = "https://www.bok.com.tw";
+    const appStoreLink = isi ? ("https://apps.apple.com/app/id"+isi) : bokUrl ;
+    const playStoreLink = ibi ? ("https://play.google.com/store/apps/details?id="+ibi) : bokUrl;
+
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     const isAndroid = /Android/i.test(navigator.userAgent);
 
     if (isIOS) {
-      window.location.href = "https://apps.apple.com/app/id862317389";
+      window.location.href = appStoreLink;
     } else if (isAndroid) {
-      window.location.href = "https://play.google.com/store/apps/details?id=com.bok.cordova";
+      window.location.href = playStoreLink;
     } else {
-      window.location.href = "https://www.bok.com.tw";
+      window.location.href = bokUrl;
     }
   </script>
 </head>
