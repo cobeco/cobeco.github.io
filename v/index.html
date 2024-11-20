@@ -6,9 +6,11 @@
   <title></title>
   <script>
     const url = window.location.href;
-    const params = new URLSearchParams(new URL(url).search);
-    const isi = params.get('isi');
-    const apn = params.get('apn');
+    const result = parseUrlParameters(url);
+
+    const params = new URLSearchParams(url.search);
+    const isi = getParameter(url, 'isi');
+    const apn = getParameter(url, 'apn');
 
     const bokUrl = "https://www.bok.com.tw";
     const appStoreLink = isi ? ("https://apps.apple.com/app/id"+isi) : bokUrl ;
@@ -24,6 +26,77 @@
     } else {
       window.location.href = bokUrl;
     }
+
+    function parseUrlParameters(url) {
+    // 配置選項
+    const config = {
+        allowEmptyValues: true,     // 是否允許空值
+        decodeValues: true,         // 是否解碼值
+        throwOnError: false         // 是否拋出錯誤
+    };
+
+    // 結果物件
+    const result = {
+        success: false,
+        params: {},
+        error: null
+    };
+
+    try {
+        if (!url || typeof url !== 'string') {
+            throw new Error('無效的 URL');
+        }
+
+        const queryString = url.split('?')[1];
+        if (!queryString) {
+            result.success = true;
+            return result;
+        }
+
+        const pairs = queryString.split('&');
+        
+        for (let pair of pairs) {
+            if (!pair) continue;
+            let [key, value] = pair.split('=');
+            if (!key) continue;
+            if (config.decodeValues) {
+                try {
+                    key = decodeURIComponent(key);
+                    value = value ? decodeURIComponent(value) : '';
+                } catch (e) {
+                    if (config.throwOnError) {
+                        throw new Error(`解碼失敗: ${e.message}`);
+                    }
+                    console.warn(`警告: 參數 ${key} 解碼失敗`);
+                }
+            }
+            if (!config.allowEmptyValues && !value) {
+                continue;
+            }
+            result.params[key] = value;
+        }
+        
+        result.success = true;
+        
+    } catch (error) {
+        result.error = error.message;
+        if (config.throwOnError) {
+            throw error;
+        }
+    }
+    
+    return result;
+}
+function getParameter(url, paramName) {
+    const result = parseUrlParameters(url);
+    
+    if (!result.success) {
+        console.error('解析 URL 失敗:', result.error);
+        return null;
+    }
+    
+    return result.params[paramName] || null;
+}
   </script>
 </head>
 </html>
