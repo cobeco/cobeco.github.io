@@ -6,7 +6,7 @@
   <title></title>
   <script>
     const url = window.location.href;
-    const params = new URLSearchParams(url.search);
+    const params = new URLSearchParams(new URL(url).search);
     const isi = params.get('isi');
     const apn = params.get('apn');
 
