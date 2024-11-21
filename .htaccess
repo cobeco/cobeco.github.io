@@ -1,1 +1,1 @@
-AddType application/json ".well-known/apple-app-site-association"
+AddType application/json "apple-app-site-association"
