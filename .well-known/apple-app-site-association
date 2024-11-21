@@ -3,7 +3,7 @@
         "apps": [],
         "details": [
             {
-                "appID": "tw.com.bok.BankOfKaohsiung",
+                "appID": "MUPVWSP6HF.tw.com.bok.BankOfKaohsiung",
                 "paths": [
                     "/v/*",
                     "NOT /t/*"
