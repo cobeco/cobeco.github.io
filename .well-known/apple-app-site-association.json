@@ -1,0 +1,14 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "tw.com.bok.BankOfKaohsiung",
+                "paths": [
+                    "/v",
+                    "NOT /t/*"
+                ]
+            }
+        ]
+    }
+}
