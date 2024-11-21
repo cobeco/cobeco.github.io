@@ -5,7 +5,7 @@
             {
                 "appID": "tw.com.bok.BankOfKaohsiung",
                 "paths": [
-                    "/v",
+                    "/v/*",
                     "NOT /t/*"
                 ]
             }
