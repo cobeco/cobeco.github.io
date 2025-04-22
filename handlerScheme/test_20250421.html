@@ -1,0 +1,25 @@
+
+<!doctype html><html><head><meta charset="utf-8"></head><body><form name="twpay" id="twpay" method="post" action="https://www.focas-test.fisc.com.tw/FOCAS_WS/API20/QRP/V2/WebToAppReq" style="display:none;"><input type="text" name="acqBank" value="007" type="hidden"><input type="text" name="terminalId" value="05600269" type="hidden"><input type="text" name="merchantId" value="007100053126001" type="hidden"><input type="text" name="txnType" value="03" type="hidden"><input type="text" name="orderNumber" value="05600269" type="hidden"><input type="text" name="encRetURL" value="ArOvoRI6kEJ%2bvQbRAStS6yakKy0lBsCLUksvShiM3b%2fP" type="hidden"><input type="text" name="encQRCode" value="ApY3Q8YGSu2ZEVGTqLHwYUojpBjGt21miQVeVUAGQ7B8Qv5gx%2b%2fj0nWPqe%2bI0s3qabUEc3bQQviAwNzRqwRezx%2foGGcKUgJoQz88bPR%2fyeaWlHHWJnYwCfB%2ba5SCqnxCJutvmuPfKVnr8gBxm1YCY4yydYexWxb142LRuHliEYtQttMoyBs5KjeuIDTERJqbf35vyfjjPwFxpFklHaZW2ArKqNCqiAPYaIXd9Egv3a6ys0CsofhC6%2ffIB6cy5RrVlwf0LByYU1X9KC%2bGkPt%2b5zVa%2f2euclJcQ6b2f7a%2f4tjyBJzBJdEaNWOqDb2E6AZdR%2bkFJTPbltq4zifixQKowUU%3d" type="hidden"><input type="text" name="verifyCode" value="01818238373B40DEEAE70BC2256631A08FC4E5A04BED8698F0BE3B21D7096364" type="hidden"> </form><script type="text/javascript">document.getElementById("twpay").submit();</script></body></html>
+
+<!--
+    錯誤訊息    03：產生檢核用 verifyCode 有誤
+    
+    傳送參數如下：
+
+    加密基碼： 053128336001100053120026900710005312600105600269
+    參數驗證碼： 053128336001100053120026900710005312600105600269
+    qrcode：TWQRP://臺北市立聯合醫院院本部/158/03/V1?D1=10000&D3=AQNJZohxVx4t&D4=20241231&D7=0042011987654323&D11=00,0070071000531260010560026905312833
+    RetURL：https://google.com
+
+    sha256
+    (
+        [acqBank] "007"   
+        +[encQRCode] "ApY3Q8YGSu2ZEVGTqLHwYUojpBjGt21miQVeVUAGQ7B8Qv5gx%2b%2fj0nWPqe%2bI0s3qabUEc3bQQviAwNzRqwRezx%2foGGcKUgJoQz88bPR%2fyeaWlHHWJnYwCfB%2ba5SCqnxCJutvmuPfKVnr8gBxm1YCY4yydYexWxb142LRuHliEYtQttMoyBs5KjeuIDTERJqbf35vyfjjPwFxpFklHaZW2ArKqNCqiAPYaIXd9Egv3a6ys0CsofhC6%2ffIB6cy5RrVlwf0LByYU1X9KC%2bGkPt%2b5zVa%2f2euclJcQ6b2f7a%2f4tjyBJzBJdEaNWOqDb2E6AZdR%2bkFJTPbltq4zifixQKowUU%3d"    
+        +[encRetURL] "ArOvoRI6kEJ%2bvQbRAStS6yakKy0lBsCLUksvShiM3b%2fP"    
+        +[merchantId] "007100053126001"   
+        +[orderNumber] "05600269"  
+        +[terminalId] "10011001"  
+        +[txnType] "03"    
+        + 053128336001100053120026900710005312600105600269 (參數驗證碼)
+    )
+    => 59407182B896DA98AF9BD39BED5DB8DABA2D1272F64DE9EEE9379DCB7995AEB0 (verifyCode) -->
