@@ -58,5 +58,35 @@
                 "67:A6:F7:B0:24:A6:BA:8F:02:90:73:9B:51:97:9C:74:BA:65:A4:AE:B7:3C:74:C7:4C:72:C1:A9:65:29:F9:08"
             ]
         }
+    },{
+        "relation":
+        [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target":
+        {
+            "namespace": "android_app",
+            "package_name": "tw.com.cidt.tpech",
+            "sha256_cert_fingerprints":
+            [
+                "7A:7C:CC:71:02:AF:15:7F:CD:D5:7D:67:A9:EB:7D:03:AE:AE:D0:57:02:D7:F2:9C:5E:C7:02:AE:8E:28:D8:BD"
+            ]
+        }
+    },
+    {
+        "relation":
+        [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target":
+        {
+            "namespace": "android_app",
+            "package_name": "tw.com.cidt.tpech",
+            "sha256_cert_fingerprints":
+            [
+                "67:A6:F7:B0:24:A6:BA:8F:02:90:73:9B:51:97:9C:74:BA:65:A4:AE:B7:3C:74:C7:4C:72:C1:A9:65:29:F9:08"
+            ]
+        }
     }
+    
 ]
