@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang='en'>
+   <head>
+      <title>test</title>
+      <meta charset='utf-8'>
+      <script>
+         function openAppOrFallback() {
+           const start = Date.now();
+           window.location = "bokmobile://bok.com.tw";
+
+           setTimeout(function () {
+             const end = Date.now();
+             if (end - start < 1500) {
+               window.alert("未安裝app");
+             }
+           }, 1000);
+         }
+      </script>
+   </head>
+   <body>
+      <button onclick="openAppOrFallback()">開啟 App</button>
+   </body>
+</html>
