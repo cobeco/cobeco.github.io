@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Link Test</title>
+    <script>
+        class HighCompatibilityAppDetection {
+    constructor(config) {
+        this.androidAppUrl = config.androidAppUrl;
+        this.iosAppUrl = config.iosAppUrl;
+        this.androidStoreUrl = config.androidStoreUrl;
+        this.iosStoreUrl = config.iosStoreUrl;
+        this.timeout = config.timeout || 2500;
+        
+        this.platform = this.detectPlatform();
+        this.capabilities = this.detectCapabilities();
+    }
+    
+    // 檢測平台
+    detectPlatform() {
+        const userAgent = navigator.userAgent;
+        
+        if (/iPad|iPhone|iPod/.test(userAgent)) {
+            return 'ios';
+        } else if (/Android/.test(userAgent)) {
+            return 'android';
+        } else {
+            return 'desktop';
+        }
+    }
+    
+    // 檢測瀏覽器能力
+    detectCapabilities() {
+        return {
+            // Page Visibility API 支援度最佳
+            hasVisibilityAPI: typeof document.hidden !== 'undefined',
+            
+            // 檢測是否支援 focus/blur 事件
+            hasFocusEvents: 'onfocus' in window && 'onblur' in window,
+            
+            // 檢測是否為移動設備
+            isMobile: /Mobi|Android/i.test(navigator.userAgent),
+            
+            // 檢測 iOS 版本
+            iosVersion: this.platform === 'ios' ? this.getiOSVersion() : null,
+            
+            // 檢測是否為 Safari
+            isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
+            
+            // 檢測是否支援 pagehide 事件
+            hasPageHide: 'onpagehide' in window
+        };
+    }
+    
+    // 主要檢測方法
+    async detectAndOpen() {
+        const strategy = this.selectDetectionStrategy();
+        console.log(`Using detection strategy: ${strategy}`, this.capabilities);
+        
+        try {
+            return await this.executeStrategy(strategy);
+        } catch (error) {
+            console.error('Detection failed, falling back to timeout method:', error);
+            return await this.fallbackDetection();
+        }
+    }
+    
+    // 選擇檢測策略
+    selectDetectionStrategy() {
+        // 優先使用 Page Visibility API（支援度最佳）
+        if (this.capabilities.hasVisibilityAPI) {
+            return 'visibility';
+        }
+        
+        // iOS Safari 特殊處理
+        if (this.platform === 'ios' && this.capabilities.isSafari) {
+            return 'ios-safari';
+        }
+        
+        // Android 使用多重檢測
+        if (this.platform === 'android') {
+            return 'android-multi';
+        }
+        
+        // 桌面版使用 focus/blur
+        if (!this.capabilities.isMobile && this.capabilities.hasFocusEvents) {
+            return 'desktop-focus';
+        }
+        
+        // 最後備案：純超時檢測
+        return 'timeout-only';
+    }
+    
+    // 執行選定的策略
+    async executeStrategy(strategy) {
+        switch (strategy) {
+            case 'visibility':
+                return await this.visibilityDetection();
+            case 'ios-safari':
+                return await this.iosSafariDetection();
+            case 'android-multi':
+                return await this.androidMultiDetection();
+            case 'desktop-focus':
+                return await this.desktopFocusDetection();
+            case 'timeout-only':
+                return await this.timeoutOnlyDetection();
+            default:
+                return await this.fallbackDetection();
+        }
+    }
+    
+    // Page Visibility API 檢測（最可靠）
+    async visibilityDetection() {
+        return new Promise((resolve) => {
+            let detected = false;
+            let timeoutId;
+            
+            const cleanup = () => {
+                document.removeEventListener('visibilitychange', visibilityHandler);
+                if (this.capabilities.hasPageHide) {
+                    window.removeEventListener('pagehide', pagehideHandler);
+                }
+                clearTimeout(timeoutId);
+            };
+            
+            const visibilityHandler = () => {
+                if (document.hidden && !detected) {
+                    detected = true;
+                    cleanup();
+                    resolve({ 
+                        appOpened: true, 
+                        method: 'visibilitychange',
+                        platform: this.platform 
+                    });
+                }
+            };
+            
+            const pagehideHandler = () => {
+                if (!detected) {
+                    detected = true;
+                    cleanup();
+                    resolve({ 
+                        appOpened: true, 
+                        method: 'pagehide',
+                        platform: this.platform 
+                    });
+                }
+            };
+            
+            // 監聽事件
+            document.addEventListener('visibilitychange', visibilityHandler);
+            if (this.capabilities.hasPageHide) {
+                window.addEventListener('pagehide', pagehideHandler);
+            }
+            
+            // 嘗試開啟 App
+            this.attemptAppOpen();
+            
+            // 超時處理
+            timeoutId = setTimeout(() => {
+                if (!detected) {
+                    cleanup();
+                    this.openStore();
+                    resolve({ 
+                        appOpened: false, 
+                        method: 'timeout',
+                        platform: this.platform 
+                    });
+                }
+            }, this.timeout);
+        });
+    }
+    
+    // iOS Safari 特殊檢測
+    async iosSafariDetection() {
+        return new Promise((resolve) => {
+            let detected = false;
+            const startTime = Date.now();
+            
+            // iOS Safari 對 Universal Links 的處理較好
+            if (this.iosAppUrl.startsWith('https://')) {
+                // 直接跳轉，依靠系統處理
+                window.location.href = this.iosAppUrl;
+                
+                // 短時間後檢查是否還在頁面
+                setTimeout(() => {
+                    const timeSpent = Date.now() - startTime;
+                    if (timeSpent < this.timeout + 200) {
+                        // 如果很快返回，可能沒有安裝 App
+                        this.openStore();
+                        resolve({ 
+                            appOpened: false, 
+                            method: 'ios-direct',
+                            platform: this.platform 
+                        });
+                    } else {
+                        resolve({ 
+                            appOpened: true, 
+                            method: 'ios-direct',
+                            platform: this.platform 
+                        });
+                    }
+                }, this.timeout);
+            } else {
+                // Custom scheme 使用 iframe 方法
+                this.iosIframeMethod(resolve);
+            }
+        });
+    }
+    
+    // iOS iframe 方法
+    iosIframeMethod(resolve) {
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'display:none;width:1px;height:1px;position:absolute;top:-9999px;';
+        iframe.src = this.iosAppUrl;
+        
+        document.body.appendChild(iframe);
+        
+        setTimeout(() => {
+            document.body.removeChild(iframe);
+            this.openStore();
+            resolve({ 
+                appOpened: false, 
+                method: 'ios-iframe',
+                platform: this.platform 
+            });
+        }, this.timeout);
+    }
+    
+    // Android 多重檢測
+    async androidMultiDetection() {
+        // Android 通常 Page Visibility API 工作良好，但加入備案
+        const promises = [
+            this.visibilityDetection(),
+            this.androidTimeoutDetection()
+        ];
+        
+        return Promise.race(promises);
+    }
+    
+    // Android 超時檢測
+    async androidTimeoutDetection() {
+        return new Promise((resolve) => {
+            this.attemptAppOpen();
+            
+            setTimeout(() => {
+                resolve({ 
+                    appOpened: false, 
+                    method: 'android-timeout',
+                    platform: this.platform 
+                });
+            }, this.timeout + 500);
+        });
+    }
+    
+    // 桌面版 focus/blur 檢測
+    async desktopFocusDetection() {
+        return new Promise((resolve) => {
+            let detected = false;
+            
+            const blurHandler = () => {
+                if (!detected) {
+                    detected = true;
+                    window.removeEventListener('blur', blurHandler);
+                    resolve({ 
+                        appOpened: true, 
+                        method: 'desktop-blur',
+                        platform: this.platform 
+                    });
+                }
+            };
+            
+            window.addEventListener('blur', blurHandler);
+            this.attemptAppOpen();
+            
+            setTimeout(() => {
+                if (!detected) {
+                    window.removeEventListener('blur', blurHandler);
+                    this.openStore();
+                    resolve({ 
+                        appOpened: false, 
+                        method: 'desktop-timeout',
+                        platform: this.platform 
+                    });
+                }
+            }, this.timeout);
+        });
+    }
+    
+    // 純超時檢測（最後備案）
+    async timeoutOnlyDetection() {
+        return new Promise((resolve) => {
+            this.attemptAppOpen();
+            
+            setTimeout(() => {
+                this.openStore();
+                resolve({ 
+                    appOpened: false, 
+                    method: 'timeout-only',
+                    platform: this.platform 
+                });
+            }, this.timeout);
+        });
+    }
+    
+    // 備案檢測方法
+    async fallbackDetection() {
+        console.warn('Using fallback detection method');
+        return await this.timeoutOnlyDetection();
+    }
+    
+    // 嘗試開啟 App
+    attemptAppOpen() {
+        const appUrl = this.platform === 'ios' ? this.iosAppUrl : this.androidAppUrl;
+        
+        try {
+            window.location.href = appUrl;
+        } catch (error) {
+            console.error('Failed to open app URL:', error);
+            // 如果直接跳轉失敗，嘗試其他方法
+            this.alternativeAppOpen(appUrl);
+        }
+    }
+    
+    // 替代開啟方法
+    alternativeAppOpen(appUrl) {
+        // 嘗試使用 window.open
+        try {
+            const popup = window.open(appUrl, '_blank');
+            if (popup) {
+                popup.close();
+            }
+        } catch (error) {
+            console.error('Alternative app open failed:', error);
+        }
+    }
+    
+    // 開啟應用商店
+    openStore() {
+        const storeUrl = this.platform === 'ios' ? this.iosStoreUrl : this.androidStoreUrl;
+        if (storeUrl) {
+            window.location.href = storeUrl;
+        }
+    }
+    
+    // 取得 iOS 版本
+    getiOSVersion() {
+        const match = navigator.userAgent.match(/OS (\d+)_(\d+)_?(\d+)?/);
+        return match ? parseInt(match[1], 10) : 0;
+    }
+    
+    // 獲取檢測能力資訊
+    getCapabilities() {
+        return {
+            platform: this.platform,
+            capabilities: this.capabilities,
+            recommendedStrategy: this.selectDetectionStrategy()
+        };
+    }
+}
+class AppLinkManager {
+    constructor(config) {
+        this.detector = new HighCompatibilityAppDetection(config);
+    }
+    
+    async openApp() {
+        console.log('Detection capabilities:', this.detector.getCapabilities());
+        
+        try {
+            const result = await this.detector.detectAndOpen();
+            console.log('Detection result:', result);
+            return result;
+        } catch (error) {
+            console.error('App detection error:', error);
+            return { appOpened: false, error: error.message };
+        }
+    }
+}
+    </script>
+</head>
+<body>
+    <button id="openAppBtn" class="app-button">
+        開啟 App
+    </button>
+    
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const appManager = new AppLinkManager({
+        androidAppUrl: 'https://yourdomain.com/app/open',
+        androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.example.yourapp',
+        iosAppUrl: 'https://yourdomain.com/app/open',
+        iosStoreUrl: 'https://apps.apple.com/app/your-app/id123456789',
+        timeout: 2500
+    });
+    
+    document.getElementById('openAppBtn')?.addEventListener('click', async () => {
+        const result = await appManager.openApp();
+        console.log('Final result:', result);
+    });
+});
+    </script>
+</body>
+</html>
