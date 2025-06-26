@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Link Test</title>
     <script>
-        class HighCompatibilityAppDetection {
+        class BOKAppDetection {
     constructor(config) {
         this.androidAppUrl = config.androidAppUrl;
         this.iosAppUrl = config.iosAppUrl;
@@ -110,7 +110,7 @@
         }
     }
     
-    // Page Visibility API 檢測（最可靠）
+    // Page Visibility API 檢測
     async visibilityDetection() {
         return new Promise((resolve) => {
             let detected = false;
@@ -161,7 +161,7 @@
             timeoutId = setTimeout(() => {
                 if (!detected) {
                     cleanup();
-                    this.openStore();
+                    this.timeoutAction();
                     resolve({ 
                         appOpened: false, 
                         method: 'timeout',
@@ -188,7 +188,7 @@
                     const timeSpent = Date.now() - startTime;
                     if (timeSpent < this.timeout + 200) {
                         // 如果很快返回，可能沒有安裝 App
-                        this.openStore();
+                        this.timeoutAction();
                         resolve({ 
                             appOpened: false, 
                             method: 'ios-direct',
@@ -219,7 +219,7 @@
         
         setTimeout(() => {
             document.body.removeChild(iframe);
-            this.openStore();
+            this.timeoutAction();
             resolve({ 
                 appOpened: false, 
                 method: 'ios-iframe',
@@ -277,7 +277,7 @@
             setTimeout(() => {
                 if (!detected) {
                     window.removeEventListener('blur', blurHandler);
-                    this.openStore();
+                    this.timeoutAction();
                     resolve({ 
                         appOpened: false, 
                         method: 'desktop-timeout',
@@ -288,13 +288,13 @@
         });
     }
     
-    // 純超時檢測（最後備案）
+    // 純超時檢測
     async timeoutOnlyDetection() {
         return new Promise((resolve) => {
             this.attemptAppOpen();
             
             setTimeout(() => {
-                this.openStore();
+                this.timeoutAction();
                 resolve({ 
                     appOpened: false, 
                     method: 'timeout-only',
@@ -344,6 +344,10 @@
         }
     }
     
+    timeoutAction(){
+        window.alert("未安裝app");
+    }
+
     // 取得 iOS 版本
     getiOSVersion() {
         const match = navigator.userAgent.match(/OS (\d+)_(\d+)_?(\d+)?/);
@@ -361,7 +365,7 @@
 }
 class AppLinkManager {
     constructor(config) {
-        this.detector = new HighCompatibilityAppDetection(config);
+        this.detector = new BOKAppDetection(config);
     }
     
     async openApp() {
@@ -381,7 +385,7 @@ class AppLinkManager {
 </head>
 <body>
     <button id="openAppBtn" class="app-button">
-        開啟 App
+        開啟 App2
     </button>
     
     <script>
@@ -389,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const appManager = new AppLinkManager({
         androidAppUrl: 'https://mbgateway.bok.com.tw/v/AppLink.html?apn=com.bok.cordova&isi=862317389&ibi=tw.com.bok.BankOfKaohsiung&efr=0&link=https://bok.com.tw?key=/BOKMobileWeb/www/index.html?action=BOK666/OpenBankAccBind&nLogin=N??redirect_uri=https://epassbooksys-t.tdcc.com.tw/MPSBKV2/rest/tsp/TSP012/016&state=244360&scope=deposit:account:inquiry&response_type=code&client_id=TdccClientID&user_id=7B8A1C8180907A135E35E0A596B67F59',
         androidStoreUrl: 'https://play.google.com/store/apps/details?id=com.example.yourapp',
-        iosAppUrl: 'https://mbgateway.bok.com.tw/v/AppLink.html?apn=com.bok.cordova&isi=862317389&ibi=tw.com.bok.BankOfKaohsiung&efr=0&link=https://bok.com.tw?key=/BOKMobileWeb/www/index.html?action=BOK666/OpenBankAccBind&nLogin=N??redirect_uri=https://epassbooksys-t.tdcc.com.tw/MPSBKV2/rest/tsp/TSP012/016&state=244360&scope=deposit:account:inquiry&response_type=code&client_id=TdccClientID&user_id=7B8A1C8180907A135E35E0A596B67F59',
+        iosAppUrl: 'https://mbgateway1.bok.com.tw/v/AppLink.html?apn=com.bok.cordova&isi=862317389&ibi=tw.com.bok.BankOfKaohsiung&efr=0&link=https://bok.com.tw?key=/BOKMobileWeb/www/index.html?action=BOK666/OpenBankAccBind&nLogin=N??redirect_uri=https://epassbooksys-t.tdcc.com.tw/MPSBKV2/rest/tsp/TSP012/016&state=244360&scope=deposit:account:inquiry&response_type=code&client_id=TdccClientID&user_id=7B8A1C8180907A135E35E0A596B67F59',
         iosStoreUrl: 'https://apps.apple.com/app/your-app/id123456789',
         timeout: 2500
     });
