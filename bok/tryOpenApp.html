@@ -33,7 +33,7 @@
     // 檢測瀏覽器能力
     detectCapabilities() {
         return {
-            // Page Visibility API 支援度最佳
+            // Page Visibility API
             hasVisibilityAPI: typeof document.hidden !== 'undefined',
             
             // 檢測是否支援 focus/blur 事件
@@ -68,7 +68,7 @@
     
     // 選擇檢測策略
     selectDetectionStrategy() {
-        // 優先使用 Page Visibility API（支援度最佳）
+        // 優先使用 Page Visibility API
         if (this.capabilities.hasVisibilityAPI) {
             return 'visibility';
         }
@@ -178,7 +178,6 @@
             let detected = false;
             const startTime = Date.now();
             
-            // iOS Safari 對 Universal Links 的處理較好
             if (this.iosAppUrl.startsWith('https://')) {
                 // 直接跳轉，依靠系統處理
                 window.location.href = this.iosAppUrl;
@@ -230,7 +229,6 @@
     
     // Android 多重檢測
     async androidMultiDetection() {
-        // Android 通常 Page Visibility API 工作良好，但加入備案
         const promises = [
             this.visibilityDetection(),
             this.androidTimeoutDetection()
@@ -385,7 +383,7 @@ class AppLinkManager {
 </head>
 <body>
     <button id="openAppBtn" class="app-button">
-        開啟 App2
+        開啟 App
     </button>
     
     <script>
