@@ -18,7 +18,7 @@
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     const isAndroid = /Android/i.test(navigator.userAgent);
 
-    if (redirect === null || myStr.trim() === "") {
+    if (redirect === null || redirect.trim() === "") {
 
         if (isIOS) {
           window.location.href = appStoreLink;
