@@ -9,6 +9,7 @@
     const result = parseUrlParameters(url);
     const isi = getParameter(url, 'isi');
     const apn = getParameter(url, 'apn');
+    const redirect = getParameter(url, 'redirect');
 
     const bokUrl = "https://www.bok.com.tw";
     const appStoreLink = isi ? ("https://apps.apple.com/app/id"+isi) : bokUrl ;
@@ -17,13 +18,17 @@
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     const isAndroid = /Android/i.test(navigator.userAgent);
 
-    if (isIOS) {
-      window.location.href = appStoreLink;
-    } else if (isAndroid) {
-      window.location.href = playStoreLink;
-    } else {
-      window.location.href = bokUrl;
-    }
+    if (redirect === null || myStr.trim() === "") {
+
+        if (isIOS) {
+          window.location.href = appStoreLink;
+        } else if (isAndroid) {
+          window.location.href = playStoreLink;
+        } else {
+          window.location.href = bokUrl;
+        }
+    }else
+        window.location.href = redirect;
 
     function parseUrlParameters(url) {
     // 配置選項
