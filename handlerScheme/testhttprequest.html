@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>HTTP CORS POST 測試</title>
+    <title>HTTP 編碼測試</title>
     <style>
         body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
         button { padding: 10px 20px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
@@ -11,7 +11,7 @@
 </head>
 <body>
 
-    <h2>Android 瀏覽器 HTTP 測試 (CORS Proxy POST 版)</h2>
+    <h2>Android 瀏覽器 HTTP 測試</h2>
     <button id="sendBtn">發送 POST JSON 請求</button>
 
     <h3>回應狀態：</h3>
@@ -25,42 +25,37 @@
             const output = document.getElementById('output');
             const statusDiv = document.getElementById('status');
             
-            statusDiv.innerText = "發送中 (POST 請求轉發中)...";
+            statusDiv.innerText = "發送中...";
             output.innerText = "";
 
-            // 1. ⚠️ 設定你原本的後端 API 網址
-            const targetUrl = 'https://mcloud.mmh.org.tw/DMZPHYCS1079/api/obsNbbrndata'; 
+            // ⚠️ 請在此處替換成你實際測試的 API URL
+            const apiUrl = 'https://mcloud.mmh.org.tw/DMZPHYCS1079/api/obsNbbrndata'; 
 
-            // 2. 使用 corsproxy.io 代理網址
-            const apiUrl = 'https://corsproxy.io?' + encodeURIComponent(targetUrl);
-
-            // 3. ⚠️ 填入你 Android App 裡對應發送的 JSON 參數
+            // ⚠️ 請在此處填入你原本發送的 JSON 參數（即使沒有中文也請依樣畫葫蘆放進去）
             const requestData = {
-        "HOSPID": "1",
+                 "HOSPID": "1",
                  "PNO": "39867523"
-    };
+            };
 
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json; charset=utf-8'
+                        'Content-Type': 'application/json; charset=utf-8',
+                        // 如果有需要特定的 Token 或 Header，請加在這裡：
+                        // 'Authorization': 'Bearer xxxxxx'
                     },
                     body: JSON.stringify(requestData)
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP 錯誤! 狀態碼: ${response.status}`);
-                }
-
-                statusDiv.innerText = "成功收到回傳！";
+                statusDiv.innerText = `成功！HTTP 狀態碼: ${response.status}`;
                 
-                // 直接讀取原始文字回应
+                // 讀取原始文字回應，不經過 JSON 解析，直接看字串
                 const textResult = await response.text();
                 output.innerText = textResult;
 
             } catch (error) {
-                statusDiv.innerText = "發送失敗";
+                statusDiv.innerText = "發送失敗，請檢查 Console 控制台。";
                 output.innerText = error.toString();
                 console.error('Error:', error);
             }
