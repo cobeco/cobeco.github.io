@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>HTTP 編碼測試</title>
+    <title>HTTP CORS POST 測試</title>
     <style>
         body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
         button { padding: 10px 20px; font-size: 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
@@ -11,7 +11,7 @@
 </head>
 <body>
 
-    <h2>Android 瀏覽器 HTTP 測試</h2>
+    <h2>Android 瀏覽器 HTTP 測試 (CORS Proxy POST 版)</h2>
     <button id="sendBtn">發送 POST JSON 請求</button>
 
     <h3>回應狀態：</h3>
@@ -22,46 +22,49 @@
 
     <script>
         document.getElementById('sendBtn').addEventListener('click', async () => {
-    const output = document.getElementById('output');
-    const statusDiv = document.getElementById('status');
-    
-    statusDiv.innerText = "發送中 (經過 Corsfix 代理)...";
-    output.innerText = "";
+            const output = document.getElementById('output');
+            const statusDiv = document.getElementById('status');
+            
+            statusDiv.innerText = "發送中 (POST 請求轉發中)...";
+            output.innerText = "";
 
-    // 1. 設定你原本的後端 API 網址
-    const targetUrl = 'https://mcloud.mmh.org.tw/DMZPHYCS1079/api/obsNbbrndata'; 
+            // 1. ⚠️ 設定你原本的後端 API 網址
+            const targetUrl = 'https://mcloud.mmh.org.tw/DMZPHYCS1079/api/obsNbbrndata'; 
 
-    // 2. 改用 Corsfix 免費代理網址（格式為：https://corsfix.com）
-    const apiUrl = 'https://proxy.corsfix.com/?' + targetUrl;
+            // 2. 使用 corsproxy.io 代理網址
+            const apiUrl = 'https://corsproxy.io?' + encodeURIComponent(targetUrl);
 
-    // 3. 填入你 Android App 裡對應發送的 JSON 參數（若為空則保持空物件 {}）
-    const requestData = {
+            // 3. ⚠️ 填入你 Android App 裡對應發送的 JSON 參數
+            const requestData = {
         "HOSPID": "1",
                  "PNO": "39867523"
     };
 
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-            body: JSON.stringify(requestData)
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=utf-8'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤! 狀態碼: ${response.status}`);
+                }
+
+                statusDiv.innerText = "成功收到回傳！";
+                
+                // 直接讀取原始文字回应
+                const textResult = await response.text();
+                output.innerText = textResult;
+
+            } catch (error) {
+                statusDiv.innerText = "發送失敗";
+                output.innerText = error.toString();
+                console.error('Error:', error);
+            }
         });
-
-        statusDiv.innerText = `成功穿透！HTTP 狀態碼: ${response.status}`;
-        
-        // 讀取原始文字回應，直接看字串
-        const textResult = await response.text();
-        output.innerText = textResult;
-
-    } catch (error) {
-        statusDiv.innerText = "發送失敗，請檢查網路連線。";
-        output.innerText = error.toString();
-        console.error('Error:', error);
-    }
-});
-
     </script>
 </body>
 </html>
